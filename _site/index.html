@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Does an Early Lead Decide the Game? | league-of-legends-analysis</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Does an Early Lead Decide the Game?" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/" />
+<meta property="og:url" content="http://localhost:4000/" />
+<meta property="og:site_name" content="league-of-legends-analysis" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Does an Early Lead Decide the Game?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","headline":"Does an Early Lead Decide the Game?","name":"league-of-legends-analysis","url":"http://localhost:4000/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=ec9cd2c7f54cc096d4ce16a5b179725ca2ef6203">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="/assets/js/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="/assets/css/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#353535">
+<meta name="msapplication-navbutton-color" content="#353535">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
+
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <ul>
+            <li class="fork"><a href="https://github.com/thamimhussain/league-of-legends-analysis">View On GitHub</a></li>
+            
+          </ul>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>league-of-legends-analysis</h1>
+          <p></p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/thamimhussain">thamimhussain</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/mattgraham">mattgraham</a></span>
+        </div>
+
+        <h1 id="does-an-early-lead-decide-the-game">Does an Early Lead Decide the Game?</h1>
+<h3 id="a-2022-league-of-legends-professional-match-analysis-">A 2022 League of Legends Professional Match Analysis 📈🎮</h3>
+
+<hr />
+
+<h2 id="1--introduction">1 · Introduction</h2>
+
+<p><strong>“League of Legends” (LoL)</strong> is the world’s most watched esport, drawing <strong>30M+</strong> peak viewers to its 2023 World Final.<br />
+The dataset from <strong><a href="https://oracleselixir.com/">Oracle’s Elixir</a></strong> records every professional game: gold, experience, kills, objectives – all time-stamped.</p>
+
+<blockquote>
+  <p><strong>Central question</strong><br />
+<em>If a team holds an assist <strong>and</strong> experience lead at 10 minutes, how likely are they to win the entire match?</em></p>
+</blockquote>
+
+<p><strong>Why you should care:</strong></p>
+<ul>
+  <li><strong>Strategic insight</strong>: Coaches decide whether to play aggressively for early leads or draft for late-game scaling.</li>
+  <li><strong>Broadcast context</strong>: Casters can instantly gauge win probabilities for viewers.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Raw rows loaded</td>
+      <td><strong>≈ 150K</strong> player+team rows</td>
+    </tr>
+    <tr>
+      <td>Rows after filtering</td>
+      <td><strong>21312</strong></td>
+    </tr>
+    <tr>
+      <td>Season analysed</td>
+      <td>2022 (patch 12.01)</td>
+    </tr>
+    <tr>
+      <td>Relevant columns</td>
+      <td><code class="language-plaintext highlighter-rouge">goldat10</code>, <code class="language-plaintext highlighter-rouge">opp_goldat10</code>, <code class="language-plaintext highlighter-rouge">xpat10</code>, <code class="language-plaintext highlighter-rouge">opp_xpat10</code>, <code class="language-plaintext highlighter-rouge">golddiffat10</code>, <code class="language-plaintext highlighter-rouge">xpdiffat10</code>, <code class="language-plaintext highlighter-rouge">killsat10</code>, <code class="language-plaintext highlighter-rouge">opp_killsat10</code>, <code class="language-plaintext highlighter-rouge">assistsat10</code>, <code class="language-plaintext highlighter-rouge">opp_assistsat10</code>, <code class="language-plaintext highlighter-rouge">firstblood</code>, <code class="language-plaintext highlighter-rouge">result</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Column descriptions</strong></p>
+  <ul>
+    <li><strong>goldat10 / opp_goldat10</strong>: Total team gold at 10:00 (ms).</li>
+    <li><strong>xpat10 / opp_xpat10</strong>: Cumulative experience points at 10:00.</li>
+    <li><strong>golddiffat10 / xpdiffat10</strong>: <em>Our</em> minus <em>their</em> resource counts (positive = advantage).</li>
+    <li><strong>kills/assists at10</strong>: Scoreboard differentials.</li>
+    <li><strong>firstblood</strong>: Whether this team secured first kill.</li>
+    <li><strong>result</strong>: <code class="language-plaintext highlighter-rouge">True</code> = win, <code class="language-plaintext highlighter-rouge">False</code> = loss.</li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h2 id="2--data-cleaning--exploratory-data-analysis-eda">2 · Data Cleaning &amp; Exploratory Data Analysis (EDA)</h2>
+
+<h3 id="21-cleaning-steps-">2.1 Cleaning Steps 🔧</h3>
+<ol>
+  <li><strong>Team-row isolation</strong>: Kept rows where <code class="language-plaintext highlighter-rouge">position == 'team'</code> <em>or</em> <code class="language-plaintext highlighter-rouge">participantid ∈ {100, 200}</code>; removes per-player duplicates.</li>
+  <li><strong>Type coercion</strong>: Converted early-game numeric columns to <code class="language-plaintext highlighter-rouge">float</code>; invalid strings → <code class="language-plaintext highlighter-rouge">NaN</code>.</li>
+  <li><strong>Derived diffs</strong>: If missing, created <code class="language-plaintext highlighter-rouge">golddiffat10 = goldat10 − opp_goldat10</code>, same for XP.</li>
+  <li><strong>Feature engineering</strong>: Added <code class="language-plaintext highlighter-rouge">killsdiff10</code>, <code class="language-plaintext highlighter-rouge">assistsdiff10</code> for modelling; cast <code class="language-plaintext highlighter-rouge">firstblood → bool</code>.</li>
+  <li><strong>Row drop</strong>: Removed teams with missing gold/XP diff (≈ **«<N_DROPPED>&gt;&gt;** rows, &lt; x% of total).</N_DROPPED></li>
+</ol>
+
+<p><strong>Head of the cleaned dataframe (5 rows)</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>gameid</th>
+      <th>side</th>
+      <th>result</th>
+      <th style="text-align: right">golddiffat10</th>
+      <th style="text-align: right">xpdiffat10</th>
+      <th style="text-align: right">killsdiff10</th>
+      <th style="text-align: right">assistsdiff10</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ESPORTSTMNT01_2690210</td>
+      <td>Blue</td>
+      <td>False</td>
+      <td style="text-align: right">1523</td>
+      <td style="text-align: right">137</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">5</td>
+    </tr>
+    <tr>
+      <td>ESPORTSTMNT01_2690210</td>
+      <td>Red</td>
+      <td>True</td>
+      <td style="text-align: right">-1523</td>
+      <td style="text-align: right">-137</td>
+      <td style="text-align: right">-3</td>
+      <td style="text-align: right">-5</td>
+    </tr>
+    <tr>
+      <td>ESPORTSTMNT01_2690219</td>
+      <td>Blue</td>
+      <td>False</td>
+      <td style="text-align: right">-1619</td>
+      <td style="text-align: right">-1586</td>
+      <td style="text-align: right">-2</td>
+      <td style="text-align: right">-2</td>
+    </tr>
+    <tr>
+      <td>ESPORTSTMNT01_2690219</td>
+      <td>Red</td>
+      <td>True</td>
+      <td style="text-align: right">1619</td>
+      <td style="text-align: right">1586</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td>ESPORTSTMNT01_2690227</td>
+      <td>Blue</td>
+      <td>True</td>
+      <td style="text-align: right">-103</td>
+      <td style="text-align: right">813</td>
+      <td style="text-align: right">-1</td>
+      <td style="text-align: right">-1</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h3 id="22-univariate-analysis">2.2 Univariate Analysis</h3>
+
+<iframe src="assets/gold_diff_hist.html" width="800" height="410" frameborder="0"></iframe>
+<p>Gold diff @ 10 min is nearly normal with μ ≈ 0 and σ ≈ 1.8k gold; extreme early snowballs (&gt;5k) are rare.</p>
+
+<hr />
+
+<h3 id="23-bivariate-analysis">2.3 Bivariate Analysis</h3>
+
+<iframe src="assets/gold_xp_scatter.html" width="900" height="450" frameborder="0"></iframe>
+<p>The diagonal trend shows gold and XP leads move together. Orange (wins) dominate the upper-right quadrant, supporting our hypothesis.</p>
+
+<hr />
+
+<h3 id="24-interesting-aggregates">2.4 Interesting Aggregates</h3>
+
+<p><strong>Win-rate by binned gold lead:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>gold_bin</th>
+      <th>Win Rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>(-1885, -942]</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <td>(0, 942]</td>
+      <td>0.60</td>
+    </tr>
+    <tr>
+      <td>(2828, 3771]</td>
+      <td>0.92</td>
+    </tr>
+    <tr>
+      <td>…</td>
+      <td>…</td>
+    </tr>
+  </tbody>
+</table>
+
+<iframe src="assets/winrate_by_gold_bin.html" width="800" height="350" frameborder="0"></iframe>
+<p>Crossing <strong>+1k gold</strong> flips the matchup above <strong>60%</strong> win chance; beyond <strong>+5k</strong>, victories are almost guaranteed.</p>
+
+<hr />
+
+<h3 id="25-imputation">2.5 Imputation</h3>
+<p>We did not impute: missing early-game stats only occur in “remake” or prematurely terminated games and were dropped to avoid skewing results.</p>
+
+<hr />
+<h2 id="3--framing-the-prediction-problem">3 · Framing the Prediction Problem</h2>
+
+<ul>
+  <li><strong>Task type</strong>: Binary classification (win vs loss).</li>
+  <li><strong>Response variable</strong>: <code class="language-plaintext highlighter-rouge">result</code>, as it is the official match outcome recorded by tournament servers.</li>
+  <li><strong>Feature timing</strong>: Only metrics known at 10 min (no mid- or late-game leaks).</li>
+  <li><strong>Evaluation metric</strong>: ROC AUC – robust to class imbalance and grades ranking quality of predicted probabilities.</li>
+</ul>
+
+<hr />
+
+<h2 id="4--baseline-model-">4 · Baseline Model 🛫</h2>
+
+<ul>
+  <li><strong>Algorithm</strong>: Logistic Regression (interpretable linear classifier).</li>
+  <li><strong>Features (total = 2)</strong></li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Encoding</th>
+      <th>Rationale</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">assistsdiffat10</code></td>
+      <td>Quantitative</td>
+      <td>Standard-scaled</td>
+      <td>Measures supportive pressure and skirmish tempo.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">xpdiffat10</code></td>
+      <td>Quantitative</td>
+      <td>Standard-scaled</td>
+      <td>Captures lane dominance and level advantages.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><em>There are 0 ordinal and 0 nominal predictors, so no one-hot encoding was required.</em></p>
+
+<ul>
+  <li><strong>Model pipeline</strong>: <code class="language-plaintext highlighter-rouge">StandardScaler ➜ LogisticRegression(max_iter=1000, C=1.0)</code></li>
+  <li><strong>Train / test split</strong>: 75/25 stratified by outcome.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Accuracy</strong></td>
+      <td>0.686</td>
+    </tr>
+    <tr>
+      <td><strong>ROC AUC</strong></td>
+      <td>0.750</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Is the model “good”?</strong><br />
+A naïve coin-flip would score 0.50 accuracy and 0.50 AUC. Hitting 0.75 AUC means the model ranks a random win higher than a random loss 3 times out of 4 – respectable for only two features, but still misclassifies ~31% of held-out games. The linear boundary also assumes additive effects; real games likely exhibit non-linear interactions, so we expect headroom for improvement.</p>
+
+<hr />
+
+<h2 id="5--final-model-">5 · Final Model 🚀</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Added feature</th>
+      <th>Type</th>
+      <th>Why it should help <strong>before</strong> seeing results</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">golddiffat10</code></td>
+      <td>Quantitative</td>
+      <td>Gold directly buys combat stats; even a small 200g lead can secure first dragon or Herald.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">killsdiff10</code></td>
+      <td>Quantitative</td>
+      <td>A kill grants 300g + tempo (death timer, map pressure) not fully reflected by assists alone.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">firstblood</code></td>
+      <td>Nominal (binary)</td>
+      <td>First Blood awards extra 400g and often snowballs lanes; encoded as 0/1.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Features are scaled through <code class="language-plaintext highlighter-rouge">StandardScaler</code> (numeric) while <code class="language-plaintext highlighter-rouge">firstblood</code> is already binary (no further encoding).</p>
+
+<ul>
+  <li><strong>Algorithm</strong>: Gradient Boosting Classifier (200 shallow trees, depth 2). Tree ensembles capture threshold effects (e.g., a 1k gold swing matters more than a 100g swing) and non-linear interactions.</li>
+  <li><strong>Hyper-parameter search</strong>: GridSearchCV (5-fold) over <code class="language-plaintext highlighter-rouge">n_estimators {200,400}</code>, <code class="language-plaintext highlighter-rouge">learning_rate {0.03,0.05,0.08}</code>, <code class="language-plaintext highlighter-rouge">max_depth {2,3}</code>. Best = <strong>200 trees, lr 0.03, depth 2</strong>.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>Accuracy</th>
+      <th>ROC AUC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Baseline</td>
+      <td>0.686</td>
+      <td>0.750</td>
+    </tr>
+    <tr>
+      <td><strong>Final</strong></td>
+      <td>0.706</td>
+      <td>0.777</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Why performance improved (data-generating perspective)</strong><br />
+Gold is the universal currency for item power spikes; including <code class="language-plaintext highlighter-rouge">golddiffat10</code> lets the model separate teams that traded kills for farm from those that did not. <code class="language-plaintext highlighter-rouge">killsdiff10</code> captures raw elimination dominance, orthogonal to assists. <code class="language-plaintext highlighter-rouge">firstblood</code> encodes an early discrete snowball event worth ~400g that can’t be inferred solely from continuous differentials.</p>
+
+<p>Tree ensembles exploit interactions like “XP lead <strong>and</strong> firstblood” being disproportionately strong, something the linear baseline cannot model. The resulting <strong>+0.027 AUC</strong> and <strong>+0.02 accuracy</strong> confirm these early-game signals sharpen win-probability estimates.</p>
+
+<hr />
+
+
+      </section>
+
+    </div>
+  </body>
+</html>
