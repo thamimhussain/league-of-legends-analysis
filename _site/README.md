@@ -1,5 +1,7 @@
 # Does an Early Lead Decide the Game?  
 ### A 2022 League of Legends Professional Match Analysis 📈🎮  
+### Name: Thamim Hussain
+### Email: thamimh@umich.edu
 
 ---
 
